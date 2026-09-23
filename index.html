@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create 2, 4, 6, 9 or 16 PDF pages per sheet directly in your browser.">
+  <title>PDF Sheet Maker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="background-orb orb-one"></div>
+  <div class="background-orb orb-two"></div>
+
+  <main class="app-shell">
+    <header class="hero">
+      <div class="brand-mark">▦</div>
+      <div class="eyebrow">PDF UTILITY</div>
+      <h1>PDF Sheet Maker</h1>
+      <p>Combine multiple PDF pages onto one sheet — just like “Pages per sheet” in a print dialog, but download the result directly.</p>
+    </header>
+
+    <section class="card upload-card">
+      <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Choose a PDF">
+        <div class="upload-icon">↑</div>
+        <h2>Drop your PDF here</h2>
+        <p>or choose a PDF from your computer</p>
+        <button id="chooseBtn" class="btn primary" type="button">Choose PDF</button>
+        <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden>
+        <small>Processing happens locally in your browser. Your PDF is not uploaded.</small>
+      </div>
+
+      <div id="fileBar" class="file-bar">
+        <div class="file-symbol">PDF</div>
+        <div class="file-info">
+          <strong id="fileName">document.pdf</strong>
+          <span id="fileMeta">0 pages</span>
+        </div>
+        <button id="removeBtn" class="icon-btn" type="button" title="Remove PDF" aria-label="Remove PDF">×</button>
+      </div>
+    </section>
+
+    <section id="workspace" class="workspace">
+      <div class="settings card">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">LAYOUT</div>
+            <h2>Pages per sheet</h2>
+          </div>
+          <span id="pageCountBadge" class="badge">0 pages</span>
+        </div>
+
+        <div class="layout-grid" id="layoutGrid">
+          <button class="layout-option" data-count="1" type="button">
+            <span class="layout-preview one"><i></i></span>
+            <strong>1</strong><small>page</small>
+          </button>
+          <button class="layout-option active" data-count="2" type="button">
+            <span class="layout-preview two"><i></i><i></i></span>
+            <strong>2</strong><small>pages</small>
+          </button>
+          <button class="layout-option" data-count="4" type="button">
+            <span class="layout-preview four"><i></i><i></i><i></i><i></i></span>
+            <strong>4</strong><small>pages</small>
+          </button>
+          <button class="layout-option" data-count="6" type="button">
+            <span class="layout-preview six"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <strong>6</strong><small>pages</small>
+          </button>
+          <button class="layout-option" data-count="9" type="button">
+            <span class="layout-preview nine"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <strong>9</strong><small>pages</small>
+          </button>
+          <button class="layout-option" data-count="16" type="button">
+            <span class="layout-preview sixteen"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <strong>16</strong><small>pages</small>
+          </button>
+        </div>
+
+        <div class="control-row">
+          <label>
+            <span>Paper size</span>
+            <select id="paperSize">
+              <option value="A4" selected>A4</option>
+              <option value="A3">A3</option>
+              <option value="Letter">US Letter</option>
+              <option value="Legal">US Legal</option>
+              <option value="A5">A5</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Orientation</span>
+            <select id="orientation">
+              <option value="auto" selected>Auto</option>
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Margin</span>
+            <select id="margin">
+              <option value="0">None</option>
+              <option value="12" selected>Small</option>
+              <option value="24">Medium</option>
+              <option value="36">Large</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Page order</span>
+            <select id="order">
+              <option value="normal" selected>Normal</option>
+              <option value="reverse">Reverse</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="option-row">
+          <label class="check">
+            <input id="showBorders" type="checkbox">
+            <span class="checkmark"></span>
+            Show page borders
+          </label>
+          <label class="check">
+            <input id="centerPages" type="checkbox" checked>
+            <span class="checkmark"></span>
+            Center pages in cells
+          </label>
+        </div>
+
+        <div class="action-row">
+          <button id="generateBtn" class="btn primary large" type="button">Create New PDF</button>
+          <button id="resetBtn" class="btn secondary" type="button">Reset</button>
+        </div>
+
+        <div id="progressWrap" class="progress-wrap" hidden>
+          <div class="progress-label">
+            <span id="progressText">Preparing PDF…</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div class="progress-track"><div id="progressBar"></div></div>
+        </div>
+      </div>
+
+      <div class="preview-layout">
+        <section class="card preview-card">
+          <div class="section-title compact">
+            <div>
+              <div class="eyebrow">PREVIEW</div>
+              <h2>First sheet</h2>
+            </div>
+            <span id="previewInfo" class="muted">Select a PDF</span>
+          </div>
+          <div id="preview" class="sheet-preview">
+            <div class="empty-preview">
+              <span>▧</span>
+              <p>Your first generated sheet will appear here.</p>
+            </div>
+          </div>
+        </section>
+
+        <aside class="card summary-card">
+          <div class="eyebrow">OUTPUT</div>
+          <h2>Your new PDF</h2>
+          <div class="summary-list">
+            <div><span>Input pages</span><strong id="summaryInput">—</strong></div>
+            <div><span>Pages / sheet</span><strong id="summaryPps">2</strong></div>
+            <div><span>Output sheets</span><strong id="summaryOutput">—</strong></div>
+            <div><span>Paper</span><strong id="summaryPaper">A4</strong></div>
+          </div>
+          <div id="successBox" class="success-box" hidden>
+            <span>✓</span>
+            <div><strong>PDF ready</strong><small>Download your newly created file.</small></div>
+          </div>
+          <a id="downloadBtn" class="btn download disabled" href="#" download="pdf-sheet-maker-output.pdf">↓ Download PDF</a>
+          <p class="privacy-note">🔒 Your file stays on this device. Nothing is sent to a server.</p>
+        </aside>
+      </div>
+    </section>
+
+    <footer>PDF Sheet Maker · Runs entirely in your browser</footer>
+  </main>
+
+  <!-- pdf-lib creates the final PDF while preserving the original PDF page content. -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <!-- PDF.js is used only for the visual preview. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+  <script src="app.js"></script>
+</body>
+</html>
